@@ -88,14 +88,16 @@
         $ sudo mysql
    ```
    
+   ```
    CREATE DATABASE IF NOT EXISTS HumanFriends;
    USE HumanFriends;
+   ```
 
     ![7.png](images/7.png)
    
 8. Создать таблицы с иерархией из диаграммы в БД.
 
-
+   ```
    CREATE TABLE AnimalGroup
    (
     id INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
@@ -136,11 +138,13 @@
     FOREIGN KEY (genius_id) REFERENCES AnimalGenius (id)
     ON DELETE CASCADE ON UPDATE CASCADE
    );
+   ```
 
     ![8.png](images/8.png)
 
 9. Заполнить низкоуровневые таблицы именами(животных), командами которые они выполняют и датами рождения.
 
+   ```
    USE HumanFriends;
 
    INSERT INTO AnimalGroup (name)
@@ -205,12 +209,14 @@
     ('Янки', '2022-12-24', 6),
     ('Иа-иа', '1969-07-19', 6),
     ('Мокко', '2023-01-20', 6);
+   ```
 
     ![9_1.png](images/9_1.png)
     ![9_2.png](images/9_2.png)
 
 10. Удалив из таблицы верблюдов, т.к. верблюдов решили перевезти в другой питомник на зимовку. Объединить таблицы лошади, и ослы в одну таблицу.
 
+   ```
    USE HumanFriends;
    DELETE FROM Animals WHERE genius_id = 5;
 
@@ -218,12 +224,14 @@
    SELECT * from Animals WHERE genius_id = 4
    UNION
    SELECT * from Animals WHERE genius_id = 6;
+   ```
 
-    ![10_1.png](images/10_1.png)
-    ![10_2.png](images/10_2.png)
+   ![10_1.png](images/10_1.png)
+   ![10_2.png](images/10_2.png)
 
 11. Создать новую таблицу “молодые животные” в которую попадут все животные старше 1 года, но младше 3 лет и в отдельном столбце с точностью до месяца подсчитать возраст животных в новой таблице.
 
+   ```
    CREATE TABLE YoungAnimals AS
       SELECT id, name, birth_date, 
       concat(floor(datediff(curdate(), birth_date) /30/12), ' лет, ',  FLOOR(datediff(curdate(), birth_date) /30) - floor(datediff(curdate(), birth_date) /30/12)*12, ' месяцев') as age, 
@@ -233,18 +241,21 @@
             AND date_add(birth_date, INTERVAL 3 YEAR) > curdate();
    
    SELECT * from YoungAnimals;
+   ```
 
-    ![11.png](images/11.png)
+   ![11.png](images/11.png)
 
 12. Объединить все таблицы в одну, при этом сохраняя поля, указывающие на прошлую принадлежность к старым таблицам.
 
+   ```
    SELECT id, name, birth_date, genius_id FROM HorseAndDonkey
    UNION
    SELECT id, name, birth_date, genius_id FROM YoungAnimals
    UNION
    SELECT id, name, birth_date, genius_id FROM Animals;
+   ```
 
-    ![12.png](images/12.png)
+   ![12.png](images/12.png)
 
 13. Создать класс с Инкапсуляцией методов и наследованием по диаграмме.
 14. Написать программу, имитирующую работу реестра домашних животных.
